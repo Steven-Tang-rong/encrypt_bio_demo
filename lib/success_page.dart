@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'login_page.dart';
 
 class SuccessPage extends StatelessWidget {
-  const SuccessPage({super.key});
+  const SuccessPage({super.key}); 
 
   @override
   Widget build(BuildContext context) {

@@ -48,6 +48,10 @@ class LoginViewModel extends ChangeNotifier {
 
     if (_canLogin != isValid) {
       _canLogin = isValid;
+      // Reset state to initial when inputs change
+      if (_state == LoginState.success) {
+        _state = LoginState.initial;
+      }
       notifyListeners();
     }
   }
