@@ -31,6 +31,15 @@ class LoginViewModel extends ChangeNotifier {
   bool _canLogin = false;
   bool get canLogin => _canLogin && _state != LoginState.loading;
 
+  // 追蹤是否已經導航到成功頁面
+  bool _hasNavigated = false;
+  bool get hasNavigated => _hasNavigated;
+
+  void setNavigated(bool value) {
+    _hasNavigated = value;
+    notifyListeners();
+  }
+
   // 密碼長度限制
   static const int minPasswordLength = 8;
 
@@ -39,6 +48,7 @@ class LoginViewModel extends ChangeNotifier {
     // 監聽文本變化
     idController.addListener(_validateInputs);
     passwordController.addListener(_validateInputs);
+    print('ST - LoginViewModel addListener');
   }
 
   // 驗證輸入
@@ -54,6 +64,7 @@ class LoginViewModel extends ChangeNotifier {
       }
       notifyListeners();
     }
+    print('ST - LoginViewModel _validateInputs');
   }
 
   // 隱藏鍵盤
@@ -70,6 +81,7 @@ class LoginViewModel extends ChangeNotifier {
 
     try {
       _state = LoginState.loading;
+      _hasNavigated = false; // Reset navigation flag when starting new login
       notifyListeners();
 
       // TODO: 實現實際的登入邏輯

@@ -52,9 +52,10 @@ class LoginPage extends StatelessWidget {
       child: Consumer<LoginViewModel>(
         builder: (BuildContext context, loginViewModel, Widget? child) {
           // 添加狀態監聽
-          if (loginViewModel.state == LoginState.success) {
+          if (loginViewModel.state == LoginState.success && !loginViewModel.hasNavigated) {
             // 使用 addPostFrameCallback 來確保在 build 完成後執行導航
             WidgetsBinding.instance.addPostFrameCallback((_) {
+              loginViewModel.setNavigated(true); // Mark that we've navigated
               Navigator.of(context).push(
                 CupertinoPageRoute(
                   builder: (context) => const SuccessPage(),
