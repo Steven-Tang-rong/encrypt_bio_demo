@@ -1,3 +1,4 @@
+import 'package:encrypt_bio_demo/services/biometric_service.dart';
 import 'package:flutter/material.dart';
 
 enum LoginState {
@@ -15,6 +16,8 @@ class LoginError {
 }
 
 class LoginViewModel extends ChangeNotifier {
+  final _biometricService = BiometricService();
+
   // 控制器
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -42,6 +45,14 @@ class LoginViewModel extends ChangeNotifier {
 
   // 密碼長度限制
   static const int minPasswordLength = 8;
+
+  // 替換原有的 initState 方法
+  void resetState() {
+    _state = LoginState.initial;
+    _hasNavigated = false;
+    _error = null;
+    notifyListeners();
+  }
 
   // 構造函數
   LoginViewModel() {
@@ -81,11 +92,11 @@ class LoginViewModel extends ChangeNotifier {
 
     try {
       _state = LoginState.loading;
-      _hasNavigated = false; // Reset navigation flag when starting new login
+      //_hasNavigated = false; // Reset navigation flag when starting new login
       notifyListeners();
 
       // TODO: 實現實際的登入邏輯
-      await Future.delayed(const Duration(seconds: 2)); // 模擬網絡請求
+      await Future.delayed(const Duration(seconds: 1)); // 模擬網絡請求
 
       // 假設登入成功
       _state = LoginState.success;

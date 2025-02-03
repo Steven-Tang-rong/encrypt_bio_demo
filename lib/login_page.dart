@@ -5,15 +5,52 @@ import 'package:provider/provider.dart';
 
 import 'login_view_model.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
 
   final String title;
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  late LoginViewModel loginViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    // 在 initState 中初始化 ViewModel
+    loginViewModel = LoginViewModel();
+    
+    loginViewModel.addListener(_handleLoginStateChange);
+  }
+
+  void _handleLoginStateChange() {
+    if (loginViewModel.state == LoginState.success && !loginViewModel.hasNavigated) {
+      // 確保在下一幀執行導航
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _navigateToSuccess();
+      });
+    }
+  }
+
+  void _navigateToSuccess() {
+    if (!mounted) return;  // 確保 Widget 還在樹中
+
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const SuccessPage(),
+      ),
+    ).then((_) {
+      // 導航返回後重置狀態
+      loginViewModel.resetState();
+    });
+  }
+
   Widget userPassWordInput(BuildContext context) {
     return TextField(
       obscureText: true,
-      //影藏密碼
       style: const TextStyle(fontSize: 14, color: Color(0xff1d747b)),
       decoration: const InputDecoration(
           fillColor: Colors.white,
@@ -47,27 +84,14 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var deviceWidth = MediaQuery.of(context).size.width;
 
-    return ChangeNotifierProvider(
-      create: (_) => LoginViewModel(),
+    return ChangeNotifierProvider<LoginViewModel>.value(
+      value: loginViewModel,
       child: Consumer<LoginViewModel>(
         builder: (BuildContext context, loginViewModel, Widget? child) {
-          // 添加狀態監聽
-          if (loginViewModel.state == LoginState.success && !loginViewModel.hasNavigated) {
-            // 使用 addPostFrameCallback 來確保在 build 完成後執行導航
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              loginViewModel.setNavigated(true); // Mark that we've navigated
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) => const SuccessPage(),
-                ),
-              );
-            });
-          }
-
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: Text(title),
+              title: Text(widget.title),
             ),
             body: Padding(
               padding: const EdgeInsets.all(24.0),
