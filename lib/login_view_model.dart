@@ -38,6 +38,8 @@ class LoginViewModel extends ChangeNotifier {
   bool _hasNavigated = false;
   bool get hasNavigated => _hasNavigated;
 
+  bool isBiometricEnabled = false;
+
   void setNavigated(bool value) {
     _hasNavigated = value;
     notifyListeners();

@@ -1,6 +1,8 @@
+import 'package:encrypt_bio_demo/services/biometric_service.dart';
 import 'package:encrypt_bio_demo/success_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 import 'login_view_model.dart';
@@ -16,6 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   late LoginViewModel loginViewModel;
+  final _biometricService = BiometricService();
 
   @override
   void initState() {
@@ -24,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     loginViewModel = LoginViewModel();
     
     loginViewModel.addListener(_handleLoginStateChange);
+    //loginViewModel.isBiometricEnabled = await _biometricService.biometricEnabled();
   }
 
   void _handleLoginStateChange() {
@@ -77,6 +81,21 @@ class _LoginPageState extends State<LoginPage> {
     FocusScopeNode currentFocus = FocusScope.of(context);
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
       FocusManager.instance.primaryFocus!.unfocus();
+    }
+  }
+
+  Future<void> loginAuthenticate() async {
+    if (loginViewModel.isBiometricEnabled == false) {
+      //TODO dialog
+      // Get.dialog(messageBoxWidget("iFPG 尚未開啟快速登入設定，\n請使用帳號密碼登入後至「設定」開啟", () {
+      //   Get.back();
+      // }));
+      return;
+    }
+
+    if (await _biometricService.authenticate()) {
+      EasyLoading.show(maskType: EasyLoadingMaskType.clear);
+      //quickLogin();
     }
   }
 
