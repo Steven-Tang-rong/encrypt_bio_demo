@@ -61,7 +61,6 @@ class LoginViewModel extends ChangeNotifier {
     // 監聽文本變化
     idController.addListener(_validateInputs);
     passwordController.addListener(_validateInputs);
-    print('ST - LoginViewModel addListener');
   }
 
   // 驗證輸入
@@ -77,7 +76,6 @@ class LoginViewModel extends ChangeNotifier {
       }
       notifyListeners();
     }
-    print('ST - LoginViewModel _validateInputs');
   }
 
   // 隱藏鍵盤
@@ -110,6 +108,20 @@ class LoginViewModel extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<void> quickLogin() async {
+    if (!_canLogin) return;
+
+    try {
+      _state = LoginState.success;
+      _error = null;
+    } catch (e) {
+      _state = LoginState.error;
+    } finally {
+      notifyListeners();
+    }
+
   }
 
   @override

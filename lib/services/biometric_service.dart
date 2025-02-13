@@ -19,9 +19,11 @@ class BiometricService {
   static const String _biometricEnableKey = 'BIOMETRIC_ENABLE';
   static const String switchQuickLoginKey = 'SWITCH_QUICK_LOGIN_KEY';
 
+
   Future<bool> biometricEnabled() async {
     final prefs = await SharedPreferences.getInstance();
     bool inEnabled = prefs.getBool(_biometricEnableKey) ?? false;
+    print('ST - inEnabled = $inEnabled ');
 
     return inEnabled;
   }
@@ -41,8 +43,10 @@ class BiometricService {
   Future<bool> openBiometrics() async {
     try {
       final bool authenticated = await authenticate();
+      print('ST - openBiometrics $authenticated');
       if (!authenticated) return false;
 
+      print('ST - openBiometrics TRUE');
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_biometricEnableKey, true);
 
