@@ -45,5 +45,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>NSFaceIDUsageDescription</key>
+    <string>我們使用生物辨識身分驗證為您提供更快、更安全的方式登入您的帳戶</string>
+    <key>Privacy - Biometric Usage Description</key>
+    <string>我們使用生物辨識身分驗證為您提供更快、更安全的方式登入您的帳戶</string>
 </dict>
 </plist>

@@ -22,6 +22,9 @@ class LoginViewModel extends ChangeNotifier {
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  final FocusNode idFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
+
   // 狀態
   LoginState _state = LoginState.initial;
   LoginState get state => _state;
@@ -38,7 +41,8 @@ class LoginViewModel extends ChangeNotifier {
   bool _hasNavigated = false;
   bool get hasNavigated => _hasNavigated;
 
-  bool isBiometricEnabled = false;
+  bool _isBiometricEnabled = false;
+  bool get isBiometricEnabled => _isBiometricEnabled;
 
   void setNavigated(bool value) {
     _hasNavigated = value;
@@ -121,7 +125,11 @@ class LoginViewModel extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
 
+  Future<void> checkBiometricState() async {
+    _isBiometricEnabled =
+    await _biometricService.biometricEnabled();
   }
 
   @override

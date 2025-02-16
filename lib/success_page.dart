@@ -25,11 +25,17 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _enableBiometricState() async {
-    _isBiometricEnable = await _biometricService.openBiometrics();
+    bool result = await _biometricService.openBiometrics();
+    setState(() {
+      _isBiometricEnable = result;
+    });
   }
 
   Future<void> _disableBiometricState() async {
-    _isBiometricEnable = await _biometricService.disableBiometrics();
+    bool result = await _biometricService.disableBiometrics();
+    setState(() {
+      _isBiometricEnable = result;
+    });
   }
 
   @override
@@ -41,7 +47,7 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> initBio() async {
-    await Future.delayed(Duration(microseconds: 1000));
+    await Future.delayed(const Duration(microseconds: 1000));
     print('ST - _isBiometricEnable = $_isBiometricEnable ');
   }
 
@@ -94,11 +100,13 @@ class _SuccessPageState extends State<SuccessPage> {
                               fontWeight: FontWeight.bold),
                         ),
                   onPressed: () {
-                    if (_isBiometricEnable!) {
-                      _disableBiometricState();
-                    } else {
-                      _enableBiometricState();
-                    }
+                    setState(() {
+                      if (_isBiometricEnable!) {
+                        _disableBiometricState();
+                      } else {
+                        _enableBiometricState();
+                      }
+                    });
                   },
                 ),
               )
