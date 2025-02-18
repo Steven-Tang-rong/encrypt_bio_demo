@@ -1,13 +1,11 @@
-import 'package:encrypt_bio_demo/hide_keyboard.dart';
 import 'package:encrypt_bio_demo/services/biometric_service.dart';
 import 'package:encrypt_bio_demo/style/custom_button_style.dart';
-import 'package:encrypt_bio_demo/success_page.dart';
+import 'package:encrypt_bio_demo/page/success_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
-import 'login_view_model.dart';
+import '../provider/login_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});

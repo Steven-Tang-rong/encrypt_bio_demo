@@ -1,4 +1,4 @@
-import 'package:encrypt_bio_demo/login_page.dart';
+import 'package:encrypt_bio_demo/page/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
