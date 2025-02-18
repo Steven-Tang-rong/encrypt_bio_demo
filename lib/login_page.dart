@@ -1,3 +1,4 @@
+import 'package:encrypt_bio_demo/hide_keyboard.dart';
 import 'package:encrypt_bio_demo/services/biometric_service.dart';
 import 'package:encrypt_bio_demo/style/custom_button_style.dart';
 import 'package:encrypt_bio_demo/success_page.dart';
@@ -20,11 +21,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late LoginViewModel loginViewModel;
   final _biometricService = BiometricService();
+  bool _isBioProcessing = false;
 
   @override
   void initState() {
     super.initState();
-    // 在 initState 中初始化 ViewModel
     loginViewModel = LoginViewModel();
     loginViewModel.addListener(_handleLoginStateChange);
 
@@ -34,7 +35,6 @@ class _LoginPageState extends State<LoginPage> {
   void _handleLoginStateChange() {
     if (loginViewModel.state == LoginState.success &&
         !loginViewModel.hasNavigated) {
-      // 確保在下一幀執行導航
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _navigateToSuccess();
       });
@@ -80,52 +80,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> loginAuthenticate() async {
-    await loginViewModel.checkBiometricState();
-
-    if (loginViewModel.isBiometricEnabled == false) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: const Text(
-              "\n尚未開啟快速登入設定",
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontFamily: "PingFangTC",
-                  fontStyle: FontStyle.normal,
-                  fontSize: 16.0),
-            ),
-            actions: [
-              ElevatedButton(
-                style: CustomButtonStyle.purpleButtonStyle,
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text(
-                  '確定',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "PingFangTC",
-                      fontStyle: FontStyle.normal,
-                      fontSize: 16.0),
-                ),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
-    if (await _biometricService.authenticate()) {
-      EasyLoading.show(maskType: EasyLoadingMaskType.clear);
-      //TODO quickLogin;
-      print('ST - quickLogin');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    var deviceWidth = MediaQuery.of(context).size.width;
+    //var deviceWidth = MediaQuery.of(context).size.width;
 
     return ChangeNotifierProvider<LoginViewModel>.value(
       value: loginViewModel,
@@ -231,7 +188,6 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               onEditingComplete: () =>
-                                  //loginViewModel.hideKeyboard(context),
                                   FocusScope.of(context).requestFocus(
                                       loginViewModel.passwordFocus)),
                         ),
@@ -310,9 +266,12 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               ElevatedButton(
                                 style: CustomButtonStyle.purpleButtonStyle,
-                                onPressed: () {
-                                  loginAuthenticate();
-                                },
+                                onPressed: loginViewModel.isProcessing
+                                    ? null
+                                    : () {
+                                        loginViewModel
+                                            .loginAuthenticate(context);
+                                      },
                                 child: const Row(
                                   children: [
                                     Icon(

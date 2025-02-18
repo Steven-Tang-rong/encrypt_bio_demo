@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main() {
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..radius = 16.0
+    ..backgroundColor = const Color(0xffacacac)
+    ..indicatorColor = Colors.white
+    ..textColor = Colors.white;
+
   runApp(const MyApp());
 }
 
@@ -18,7 +26,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const LoginPage(title: 'Login Page'),
-      builder: EasyLoading.init(),
+      builder:  EasyLoading.init(),
     );
   }
 }
