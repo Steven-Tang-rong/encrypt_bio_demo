@@ -17,13 +17,10 @@ class BiometricService {
   List<BiometricType> availableBiometrics = [];
 
   static const String _biometricEnableKey = 'BIOMETRIC_ENABLE';
-  static const String switchQuickLoginKey = 'SWITCH_QUICK_LOGIN_KEY';
-
 
   Future<bool> biometricEnabled() async {
     final prefs = await SharedPreferences.getInstance();
     bool inEnabled = prefs.getBool(_biometricEnableKey) ?? false;
-    print('ST - inEnabled = $inEnabled ');
 
     return inEnabled;
   }
@@ -33,8 +30,10 @@ class BiometricService {
       return await _auth.authenticate(
         localizedReason: '請使用生物辨識進行身分驗證',
         options: const AuthenticationOptions(
-          stickyAuth: true, biometricOnly: true,),);
-    } catch (e) {
+          biometricOnly: true,
+        ),
+      );
+    } on PlatformException catch (e) {
       print('生物辨識驗證時發生錯誤: $e');
       return false;
     }
@@ -43,10 +42,8 @@ class BiometricService {
   Future<bool> openBiometrics() async {
     try {
       final bool authenticated = await authenticate();
-      print('ST - openBiometrics $authenticated');
       if (!authenticated) return false;
 
-      print('ST - openBiometrics TRUE');
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_biometricEnableKey, true);
 
@@ -68,20 +65,7 @@ class BiometricService {
       return false;
     } catch (e) {
       //TODO show error dialog
-      // Get.dialog(messageBoxWidget("停用生物辨識時發生錯誤: $e", () {
-      //   Get.back();
-      // }));
       return true;
-    }
-  }
-
-  Future<void> getAvailableBiometrics() async {
-    try {
-      availableBiometrics = await _auth.getAvailableBiometrics();
-
-      return;
-    } on PlatformException catch (e) {
-      availableBiometrics = <BiometricType>[];
     }
   }
 
@@ -107,5 +91,4 @@ class BiometricService {
       }
     }
   }
-
 }

@@ -9,7 +9,7 @@ class SuccessPageViewModel extends ChangeNotifier {
   bool get isBiometricEnable => _isBiometricEnable;
 
   Future<void> initBiometricState() async {
-    _isBiometricEnable= await _biometricService.biometricEnabled();
+    _isBiometricEnable = await _biometricService.biometricEnabled();
 
     notifyListeners();
   }
@@ -22,7 +22,5 @@ class SuccessPageViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
-
-
 
 }

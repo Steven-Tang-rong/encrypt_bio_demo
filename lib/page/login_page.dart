@@ -1,4 +1,3 @@
-import 'package:encrypt_bio_demo/services/biometric_service.dart';
 import 'package:encrypt_bio_demo/style/custom_button_style.dart';
 import 'package:encrypt_bio_demo/page/success_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,8 +17,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   late LoginViewModel loginViewModel;
-  final _biometricService = BiometricService();
-  bool _isBioProcessing = false;
 
   @override
   void initState() {
@@ -27,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     loginViewModel = LoginViewModel();
     loginViewModel.addListener(_handleLoginStateChange);
 
-    loginViewModel.checkBiometricState();
+    loginViewModel.initBiometricState();
   }
 
   void _handleLoginStateChange() {
@@ -45,11 +42,10 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.of(context)
         .push(
       CupertinoPageRoute(
-        builder: (context) => SuccessPage(),
+        builder: (context) => const SuccessPage(),
       ),
     )
         .then((_) {
-      // 導航返回後重置狀態
       loginViewModel.resetState();
     });
   }
@@ -80,8 +76,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    //var deviceWidth = MediaQuery.of(context).size.width;
-
     return ChangeNotifierProvider<LoginViewModel>.value(
       value: loginViewModel,
       child: Scaffold(
@@ -190,7 +184,6 @@ class _LoginPageState extends State<LoginPage> {
                                       loginViewModel.passwordFocus)),
                         ),
                         const SizedBox(height: 16),
-                        // 密碼輸入框
                         Padding(
                           padding: const EdgeInsets.fromLTRB(12, 0, 0, 12),
                           child: Align(
@@ -251,7 +244,6 @@ class _LoginPageState extends State<LoginPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              // 登入按鈕
                               ElevatedButton(
                                 style: CustomButtonStyle.normalButtonStyle,
                                 onPressed: loginViewModel.canLogin

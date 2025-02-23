@@ -4,12 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-enum LoginState {
-  initial,
-  loading,
-  success,
-  error
-}
+enum LoginState { initial, loading, success, error }
 
 class LoginError {
   final String message;
@@ -19,28 +14,23 @@ class LoginError {
 }
 
 class LoginViewModel extends ChangeNotifier {
-  final _biometricService = BiometricService();
+  final BiometricService _biometricService = BiometricService();
 
-  // 控制器
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   final FocusNode idFocus = FocusNode();
   final FocusNode passwordFocus = FocusNode();
 
-  // 狀態
   LoginState _state = LoginState.initial;
   LoginState get state => _state;
 
-  // 錯誤信息
   LoginError? _error;
   LoginError? get error => _error;
 
-  // 是否可以點擊登入按鈕
   bool _canLogin = false;
   bool get canLogin => _canLogin && _state != LoginState.loading;
 
-  // 追蹤是否已經導航到成功頁面
   bool _hasNavigated = false;
   bool get hasNavigated => _hasNavigated;
 
@@ -101,7 +91,6 @@ class LoginViewModel extends ChangeNotifier {
 
       _state = LoginState.success;
       _error = null;
-
     } catch (e) {
       _state = LoginState.error;
       _error = LoginError('登入失敗：${e.toString()}');
@@ -116,7 +105,6 @@ class LoginViewModel extends ChangeNotifier {
     try {
       _state = LoginState.success;
       _error = null;
-
     } catch (e) {
       _state = LoginState.error;
     } finally {
@@ -124,9 +112,10 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> checkBiometricState() async {
-    _isBiometricEnabled =
-    await _biometricService.biometricEnabled();
+  Future<void> initBiometricState() async {
+    _isBiometricEnabled = await _biometricService.biometricEnabled();
+
+    notifyListeners();
   }
 
   Future<void> loginAuthenticate(BuildContext context) async {
@@ -134,7 +123,7 @@ class LoginViewModel extends ChangeNotifier {
     _isProcessing = true;
     notifyListeners();
 
-    await checkBiometricState();
+    await initBiometricState();
 
     if (!context.mounted) return;
 
